@@ -3,9 +3,12 @@
  */
 
 import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 
 @Injectable()
 export class OwlDateTimeIntl {
+
+    readonly changes: Subject<void> = new Subject<void>();
 
     /** A label for the up second button (used by screen readers).  */
     upSecondLabel = 'Add a second';

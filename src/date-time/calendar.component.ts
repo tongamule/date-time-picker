@@ -13,13 +13,15 @@ import {
     Input, NgZone,
     OnInit,
     Optional,
-    Output
+    Output,
+    ChangeDetectorRef
 } from '@angular/core';
 import { OwlDateTimeIntl } from './date-time-picker-intl.service';
 import { DateTimeAdapter } from './adapter/date-time-adapter.class';
 import { OWL_DATE_TIME_FORMATS, OwlDateTimeFormats } from './adapter/date-time-format.class';
 import { SelectMode } from './date-time.class';
 import { take } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'owl-date-time-calendar',
@@ -209,11 +211,17 @@ export class OwlCalendarComponent<T> implements OnInit, AfterContentInit {
         return true;
     }
 
+    private intlChangesSub = Subscription.EMPTY;
+
     constructor( private elmRef: ElementRef,
                  private pickerIntl: OwlDateTimeIntl,
                  private ngZone: NgZone,
+                 private cdRef: ChangeDetectorRef,
                  @Optional() private dateTimeAdapter: DateTimeAdapter<T>,
                  @Optional() @Inject(OWL_DATE_TIME_FORMATS) private dateTimeFormats: OwlDateTimeFormats ) {
+        this.intlChangesSub = this.pickerIntl.changes.subscribe(() => {
+            this.cdRef.markForCheck();
+        });
     }
 
     public ngOnInit() {
